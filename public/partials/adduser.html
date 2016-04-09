@@ -1,0 +1,26 @@
+
+<div class="row">
+	<span id="title-primary">Add user<span> <span id="title-secondary">our next task-slayer</span>
+</div>
+
+<form>
+  Name <span id="required">*</span>
+	<div class="row">
+    <div class="small-7 columns">
+		  <input ng-model="name" type="text" required>
+    </div>
+	</div>
+  Email <span id="required">*</span>
+  <div class="row">
+    <div class="small-7 columns">
+      <input ng-model="email" type="email" required>
+    </div>
+  </div>
+	<div class="row text-center">
+    <div class="small-7 text-center columns">
+		  <button id="submit" class="button info" ng-click="addUser()">Submit</button>
+    </div>
+	</div>
+</form>
+
+{{status}}

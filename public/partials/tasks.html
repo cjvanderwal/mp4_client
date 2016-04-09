@@ -1,0 +1,39 @@
+<div class="row">
+	<span id="title-primary">Tasks<span> <span id="title-secondary">really important stuff</span>
+	<a class="success button float-right" href="#/addtask">Add Task</a><br>
+</div>
+
+<div class="row">
+	<div class="small-4 columns">
+		<form>
+			<input type="radio" name="taskStatus" checked> Pending
+			<input type="radio" name="taskStatus"> Complete
+			<input type="radio" name="taskStatus"> All
+		</form>
+	</div>
+	<div class="small-4 columns">
+		Sort by:
+		<select>
+      <option value="title">dateCreated</option>
+      <option value="deadline">deadline</option>
+			<option value="name">name</option>
+			<option value="assignedUserName">assignedUserName</option>
+    </select>
+	</div>
+	<div class="small-3 columns">
+		<form>
+			<input type="radio" name="sortOrder" checked> Ascending<br>
+			<input type="radio" name="sortOrder"> Descending
+		</form>
+	</div>
+</div>
+
+<ul>
+  <li ng-repeat="task in taskList">
+      <div class="row">
+        <div class="small-6 columns"><a ng-href="#/tasks/{{task._id}}">{{task.name}}</a></div>
+        <div class="small-3 columns text-right">Deadline: {{task.deadline}}<br>Assigned to {{task.assignedUserName}}.</div>
+        <div class="small-3 columns text-right"><button class="alert button" ng-click="removeTask(task._id)">Delete</button></div>
+      </div>
+  </li>
+</ul>

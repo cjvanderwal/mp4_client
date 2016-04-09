@@ -1,1 +1,36 @@
-// Add any custom Sass & CSS here
+#title-primary {
+  position: relative;
+  font-size: 50px;
+  color: black;
+  // left: 25px;
+}
+
+#title-secondary {
+  font-size: 33px;
+  color: gray;
+}
+
+h1 {
+  background-color: #e6e6e6;
+  margin-bottom: 50px;
+}
+
+#submit {
+  color: black;
+  background-color: #99ccff;
+}
+
+#required {
+  color: red;
+}
+
+.button {
+  border-radius: 3px;
+}
+
+li {
+  list-style: none;
+  border-top: 1px solid #e6e6e6;
+
+  padding-top: 15px;
+}

@@ -1,0 +1,14 @@
+<div class="row">
+	<span id="title-primary">Users<span> <span id="title-secondary">a list of cool people</span>
+  <a class="success button float-right" href="#/adduser">Add User</a><br>
+</div>
+
+<ul>
+  <li ng-repeat="user in userList">
+      <div class="row">
+        <div class="small-4 columns"><a ng-href="#/users/{{user._id}}">{{user.name}}</a></div>
+        <div class="small-4 columns">{{user.email}}</div>
+        <div class="small-4 columns text-right"><button class="alert button" ng-click="removeUser(user._id)">Delete</button></div>
+      </div>
+  </li>
+</ul>

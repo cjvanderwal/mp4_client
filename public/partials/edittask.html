@@ -1,0 +1,45 @@
+<div class="row">
+  <span id="title-primary">Edit Task<span> <span id="title-secondary">staying occupied</span>
+</div>
+
+<form>
+  Name <span id="required">*</span>
+	<div class="row">
+    <div class="small-7 columns">
+		  <input ng-model="name" type="text">
+    </div>
+	</div>
+  Description
+  <div class="row">
+    <div class="small-7 columns">
+      <input ng-model="description" type="text">
+    </div>
+  </div>
+  Deadline <span id="required">*</span>
+  <div class="row">
+    <div class="small-7 columns">
+      <input ng-model="date" type="date">
+    </div>
+  </div>
+  Assigned User
+  <div class="row">
+    <div class="small-7 columns">
+      <select>
+        <option value="blank"></option>
+	      <option value="user1">user1</option>
+	      <option value="user2">user2</option>
+				<option value="user3">user3</option>
+				<option value="user4">user4</option>
+	    </select>
+    </div>
+  </div>
+    Completed
+    <input type="radio" name="completed" value="yes"> Yes
+    <input type="radio" name="completed" value="no"> No
+</form>
+
+<div class="row text-center">
+  <div class="small-7 text-center columns">
+    <div id="submit" class="button info" ng-click="setData()">Submit</div>
+  </div>
+</div>

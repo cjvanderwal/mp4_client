@@ -1,16 +1,12 @@
-<div class="list" ng-controller='SettingsController'>		
-	<form>
-	  <div class="row">
-          <div class="small-12 columns">
-            <input ng-model="url" type="text" placeholder="URL">
-          </div>
-      </div>
-
-    <div class="text-center">
-      <button ng-click="setUrl()" class="button tiny info">Set URL</button>
-    </div>
-
-    {{displayText}}
-
-  </form>
+<div class="row">
+	<span id="title-primary">Settings<span> <span id="title-secondary">set your backend URL</span>
 </div>
+
+<form>
+	<input ng-model="url" type="text">
+	<div class="row text-center">
+		<button id="submit" class="button" ng-click="changeUrl()">Set URL</button>
+	</div>
+</form>
+
+{{status}}

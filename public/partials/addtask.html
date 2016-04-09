@@ -1,0 +1,38 @@
+<div class="row">
+	<span id="title-primary">Add task<span> <span id="title-secondary">staying occupied</span>
+</div>
+
+<form>
+  Name <span id="required">*</span>
+	<div class="row">
+    <div class="small-7 columns">
+		  <input ng-model="name" type="text" required>
+    </div>
+	</div>
+  Description
+  <div class="row">
+    <div class="small-7 columns">
+      <input ng-model="desc" type="text">
+    </div>
+  </div>
+  Deadline <span id="required">*</span>
+  <div class="row">
+    <div class="small-7 columns">
+      <input ng-model="deadline" type="date" required>
+    </div>
+  </div>
+  Assigned User
+  <div class="row">
+    <div class="small-7 columns">
+      <select ng-model="userID">
+        <option ng-repeat="user in userList" value="{{user._id}}">{{user.name}}</option>
+	    </select>
+    </div>
+	<div class="row text-center">
+	  <div class="small-7 text-center columns">
+	    <button id="submit" class="button info" ng-click="addTask()">Submit</button>
+	  </div>
+	</div>
+</form>
+
+{{status}}
