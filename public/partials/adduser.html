@@ -3,18 +3,24 @@
 	<span id="title-primary">Add user<span> <span id="title-secondary">our next task-slayer</span>
 </div>
 
-<form>
+<form name="addUserForm" novalidate>
   Name <span id="required">*</span>
 	<div class="row">
-    <div class="small-7 columns">
-		  <input ng-model="name" type="text" required>
-    </div>
+		<div class="form-group">
+	    <div class="small-7 columns">
+			  <input ng-model="name" name="name" type="text" class="form-control" required>
+				<p ng-show="addUserForm.name.$invalid" class="help-block">A name is required.</p>
+	    </div>
+		</div>
 	</div>
   Email <span id="required">*</span>
   <div class="row">
-    <div class="small-7 columns">
-      <input ng-model="email" type="email" required>
-    </div>
+		<div class="form-group">
+	    <div class="small-7 columns">
+	      <input ng-model="email" name="email" type="email" class="form-control" required>
+				<p ng-show="addUserForm.email.$invalid" class="help-block">An email is required.</p>
+	    </div>
+		</div>
   </div>
 	<div class="row text-center">
     <div class="small-7 text-center columns">
@@ -22,5 +28,6 @@
     </div>
 	</div>
 </form>
+
 
 {{status}}

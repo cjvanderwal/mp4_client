@@ -2,12 +2,15 @@
 	<span id="title-primary">Add task<span> <span id="title-secondary">staying occupied</span>
 </div>
 
-<form>
+<form name="addTaskForm" novalidate>
   Name <span id="required">*</span>
 	<div class="row">
-    <div class="small-7 columns">
-		  <input ng-model="name" type="text" required>
-    </div>
+		<div class="form-group">
+	    <div class="small-7 columns">
+			  <input ng-model="name" name="name" type="text" class="form-control" required>
+				<p ng-show="addTaskForm.name.$invalid" class="help-block">A name is required.</p>
+	    </div>
+		</div>
 	</div>
   Description
   <div class="row">
@@ -17,9 +20,14 @@
   </div>
   Deadline <span id="required">*</span>
   <div class="row">
-    <div class="small-7 columns">
-      <input ng-model="deadline" type="date" required>
-    </div>
+		<div class="form-group">
+	    <div class="small-7 columns">
+				<datepicker>
+	      	<input ng-model="deadline" name="deadline" type="text" class="form-control" required>
+				</datepicker>
+				<p ng-show="addTaskForm.deadline.$invalid" class="help-block">A deadline is required.</p>
+	    </div>
+		</div>
   </div>
   Assigned User
   <div class="row">

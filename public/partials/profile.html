@@ -12,11 +12,26 @@
 </div>
 
 <ul>
-  <li ng-repeat="task in taskList">
+  <li ng-repeat="task in incompleteTaskList">
       <div class="row">
         <div class="small-4 columns"><a ng-href="#/tasks/{{task._id}}">{{task.name}}</a></div>
         <div class="small-4 columns text-center">Deadline: {{task.deadline}}</div>
         <div class="small-4 columns text-right"><button class="secondary button" ng-click="completeTask(task._id)">Completed</button></div>
+      </div>
+  </li>
+</ul>
+
+<br>
+<div class="row text-center">
+	<div class="small-12 columns"><button class="large info button" ng-click="showCompleted()">Show Completed Tasks</button></div>
+</div>
+<br>
+
+<ul>
+  <li ng-repeat="task in completeTaskList">
+      <div class="row">
+        <div class="small-4 columns"><a ng-href="#/tasks/{{task._id}}">{{task.name}}</a></div>
+        <div class="small-4 columns text-center">Deadline: {{task.deadline}}</div>
       </div>
   </li>
 </ul>
