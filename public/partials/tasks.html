@@ -6,15 +6,15 @@
 <div class="row">
 	<div class="small-4 columns">
 		<form>
-			<input type="radio" name="taskStatus" checked> Pending
-			<input type="radio" name="taskStatus"> Complete
-			<input type="radio" name="taskStatus"> All
+			<input type="radio" name="taskStatus" ng-click="taskType = false" checked> Pending
+			<input type="radio" name="taskStatus" ng-click="taskType = true"> Complete
+			<input type="radio" name="taskStatus" ng-click="taskType = all"> All
 		</form>
 	</div>
 	<div class="small-4 columns">
 		Sort by:
-		<select>
-      <option value="title">dateCreated</option>
+		<select ng-model="sortBy">
+      <option value="dateCreated">dateCreated</option>
       <option value="deadline">deadline</option>
 			<option value="name">name</option>
 			<option value="assignedUserName">assignedUserName</option>
@@ -22,10 +22,15 @@
 	</div>
 	<div class="small-3 columns">
 		<form>
-			<input type="radio" name="sortOrder" checked> Ascending<br>
-			<input type="radio" name="sortOrder"> Descending
+			<input type="radio" name="sortOrder" ng-click="direction=1" checked> Ascending<br>
+			<input type="radio" name="sortOrder" ng-click="direction=-1"> Descending
 		</form>
 	</div>
+</div>
+
+<div class="row">
+	<div class="small-6 columns text-left"><button id="prev-task-button" class="disabled button" ng-click="prevPage()">Previous</button></div>
+	<div class="small-6 columns text-right"><button id="next-task-button" class="secondary button" ng-click="nextPage()">Next</button></div>
 </div>
 
 <ul>

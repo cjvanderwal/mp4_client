@@ -6,6 +6,10 @@ mp4Services.factory('Users', function($http, $window) {
       var baseUrl = $window.sessionStorage.baseurl;
       return $http.get(baseUrl+'/api/users');
     },
+    getById : function(id) {
+      var baseUrl = $window.sessionStorage.baseurl;
+      return $http.get(baseUrl+'/api/users/'+id);
+    },
     remove : function(id) {
       var baseUrl = $window.sessionStorage.baseurl;
       return $http.delete(baseUrl+'/api/users/'+id);
@@ -13,10 +17,6 @@ mp4Services.factory('Users', function($http, $window) {
     add : function(obj) {
       var baseUrl = $window.sessionStorage.baseurl;
       return $http.post(baseUrl+'/api/users/', obj);
-    },
-    profile : function(id) {
-      var baseUrl = $window.sessionStorage.baseurl;
-      return $http.get(baseUrl+'/api/users/'+id);
     }
   }
 });
@@ -27,13 +27,26 @@ mp4Services.factory('Tasks', function($http, $window) {
       var baseUrl = $window.sessionStorage.baseurl;
       return $http.get(baseUrl+'/api/tasks/');
     },
+    getById : function(id) {
+      var baseUrl = $window.sessionStorage.baseurl;
+      return $http.get(baseUrl+'/api/tasks/'+id);
+    },
     getByQuery : function(obj) {
       var baseUrl = $window.sessionStorage.baseurl;
       return $http.get(baseUrl+'/api/tasks?where='+JSON.stringify(obj));
     },
-    getById : function(id) {
+    getByNum : function(skip, limit) {
       var baseUrl = $window.sessionStorage.baseurl;
-      return $http.get(baseUrl+'/api/tasks/'+id);
+      return $http.get(baseUrl+'/api/tasks?&skip='+skip+'&limit='+limit);
+    },
+    getByPagination : function(skip, sort, query, order) {
+      var baseUrl = $window.sessionStorage.baseurl;
+      queryString = baseUrl + '/api/tasks?skip='+skip;
+      queryString += '&sort={'+JSON.stringify(sort)+': '+order+'}';
+      for (var key in query) {
+        queryString += "&" + key + "=" + JSON.stringify(query[key]);
+      }
+      return $http.get(queryString);
     },
     remove : function(id) {
       var baseUrl = $window.sessionStorage.baseurl;

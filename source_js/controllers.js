@@ -9,9 +9,16 @@ mp4Controllers.controller('UsersController', ['$scope', '$http', 'Users', 'Tasks
 
   // remove a specified user from the backend
   $scope.removeUser = function(id) {
-    Users.remove(id).success(function(delete_response) {
-      Users.getAll().success(function(get_response) {
-        $scope.userList = get_response.data;
+    Tasks.getByQuery({"assignedUser": id}).success(function(tasks_obj) {
+      for (var i = 0; i < tasks_obj.data.length; i++) {
+        tasks_obj.data[i].assignedUser = '';
+        tasks_obj.data[i].assignedUserName = 'unassigned';
+        Tasks.edit(tasks_obj.data[i]).success(function(add_response) {});
+      }
+      Users.remove(id).success(function(delete_response) {
+        Users.getAll().success(function(get_response) {
+          $scope.userList = get_response.data;
+        });
       });
     });
   };
@@ -26,7 +33,7 @@ mp4Controllers.controller('AddUserController', ['$scope', '$http', 'Users', func
   $scope.addUser = function() {
     Users.add({name: $scope.name, email: $scope.email}).then(
       function(response) {
-        $scope.status = "User " + $scope.name + " has been added!";
+        $scope.status = response.data.message;
       },
       function(error) {
         $scope.status = error.data.message;
@@ -38,7 +45,7 @@ mp4Controllers.controller('AddUserController', ['$scope', '$http', 'Users', func
 mp4Controllers.controller('ProfileController', ['$scope', '$http', '$routeParams', 'Users', 'Tasks', function($scope, $http, $routeParams, Users, Tasks) {
 
   // get the specific user from the backend
-  Users.profile($routeParams.userID).success(function(response) {
+  Users.getById($routeParams.userID).success(function(response) {
     $scope.user = response.data;
   });
 
@@ -54,6 +61,7 @@ mp4Controllers.controller('ProfileController', ['$scope', '$http', '$routeParams
     });
   };
 
+  // mark a task as completed
   $scope.completeTask = function(id) {
     Tasks.getById(id).success(function(obj) {
       obj.data.completed = true;
@@ -68,12 +76,13 @@ mp4Controllers.controller('ProfileController', ['$scope', '$http', '$routeParams
 }]);
 
 mp4Controllers.controller('TasksController', ['$scope', '$window', 'Tasks' , function($scope, $window, Tasks) {
-  $scope.inProgress = function() {
-
-  }
+  $scope.currSkip = 0;
+  $scope.taskType = "false";
+  $scope.sortBy = "dateCreated";
+  $scope.direction = "1";
 
   // get the list of tasks from the backend
-  Tasks.getAll().success(function(response) {
+  Tasks.getByNum($scope.currSkip, 10).success(function(response) {
     $scope.taskList = response.data;
   });
 
@@ -83,6 +92,72 @@ mp4Controllers.controller('TasksController', ['$scope', '$window', 'Tasks' , fun
       Tasks.getAll().success(function(get_response) {
         $scope.taskList = get_response.data;
       });
+    });
+  };
+
+  // watch the taskType variable to change the radio value
+  $scope.$watch('taskType', function() {
+    $scope.currSkip = 0;
+    $scope.currQuery = {"where": {"completed": $scope.taskType}};
+
+    Tasks.getByPagination($scope.currSkip, $scope.sortBy, $scope.currQuery, $scope.direction).success(function(response) {
+      $scope.numTasks = response.data.length;
+      Tasks.getByPagination($scope.currSkip, $scope.sortBy, $scope.currQuery, $scope.direction).success(function(response2) {
+        $scope.taskList = response2.data;
+        document.getElementById('prev-task-button').className = "disabled button";
+        document.getElementById('next-task-button').className = "secondary button";
+      });
+    });
+  });
+
+  // watch the sortBy variable to change the select value
+  $scope.$watch('sortBy', function() {
+    $scope.currQuery = {"where": {"completed": $scope.taskType}, "limit": 10};
+
+    Tasks.getByPagination($scope.currSkip, $scope.sortBy, $scope.currQuery, $scope.direction).success(function(response) {
+      $scope.taskList = response.data;
+    });
+  });
+
+  // watch the direction variable to change the radio value
+  $scope.$watch('direction', function() {
+    Tasks.getByPagination($scope.currSkip, $scope.sortBy, $scope.currQuery, $scope.direction).success(function(response) {
+      $scope.taskList = response.data;
+    });
+  });
+
+  // get the next 10 tasks
+  $scope.nextPage = function() {
+    if ($scope.currSkip + 10 >= $scope.numTasks) {
+      document.getElementById('next-task-button').className = "disabled button";
+      return;
+    }
+    else if ($scope.currSkip + 20 >= $scope.numTasks) {
+      document.getElementById('next-task-button').className = "disabled button";
+    }
+
+    document.getElementById('prev-task-button').className = "secondary button";
+    $scope.currSkip += 10;
+    $scope.currQuery = {"where": {"completed": $scope.taskType}, "limit": 10};
+    Tasks.getByPagination($scope.currSkip, $scope.sortBy, $scope.currQuery, $scope.direction).success(function(response) {
+      $scope.taskList = response.data;
+    });
+  };
+
+  // get the previous 10 tasks
+  $scope.prevPage = function() {
+    if ($scope.currSkip <= 0) {
+      document.getElementById('prev-task-button').className = "disabled button";
+      return;
+    }
+    else if ($scope.currSkip <= 10) {
+      document.getElementById('prev-task-button').className = "disabled button";
+    }
+    $scope.currSkip -= 10;
+    document.getElementById('next-task-button').className = "secondary button";
+    $scope.currQuery = {"where": {"completed": $scope.taskType}, "limit": 10};
+    Tasks.getByPagination($scope.currSkip, $scope.sortBy, $scope.currQuery, $scope.direction).success(function(response) {
+      $scope.taskList = response.data;
     });
   };
 
@@ -101,7 +176,7 @@ mp4Controllers.controller('AddTaskController', ['$scope', '$window', 'Tasks', 'U
 
   // add a new task to the backend, must get the user to be assigned to
   $scope.addTask = function() {
-    Users.profile($scope.userID).success(function(response) {
+    Users.getById($scope.userID).success(function(response) {
       $scope.userName = response.data.name;
 
       Tasks.add({name: $scope.name,
@@ -143,7 +218,7 @@ mp4Controllers.controller('EditTaskController', ['$scope', '$window', '$routePar
   });
 
   $scope.editTask = function() {
-    Users.profile($scope.task.assignedUser).success(function(response) {
+    Users.getById($scope.task.assignedUser).success(function(response) {
       $scope.task.assignedUserName = response.data.name;
 
       // put the task back to the backend
