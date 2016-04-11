@@ -7,6 +7,7 @@
   <div class="small-6 columns"><h2>{{user.email}}</h2></div>
 </div>
 
+{{user}}
 <div class="row">
   <p id="title-primary">Pending Tasks</p>
 </div>
@@ -14,7 +15,7 @@
 <ul>
   <li ng-repeat="task in incompleteTaskList">
       <div class="row">
-        <div class="small-4 columns"><a ng-href="#/tasks/{{task._id}}">{{task.name}}</a></div>
+        <div class="small-4 columns"><a ng-href="#/tasks/{{task._id}}">{{task.name}}<br>{{task._id}}</a></div>
         <div class="small-4 columns text-center">Deadline: {{task.deadline}}</div>
         <div class="small-4 columns text-right"><button class="secondary button" ng-click="completeTask(task._id)">Completed</button></div>
       </div>
@@ -30,7 +31,7 @@
 <ul>
   <li ng-repeat="task in completeTaskList">
       <div class="row">
-        <div class="small-4 columns"><a ng-href="#/tasks/{{task._id}}">{{task.name}}</a></div>
+        <div class="small-4 columns"><a ng-href="#/tasks/{{task._id}}">{{task.name}}<br>{{task._id}}</a></div>
         <div class="small-4 columns text-center end">Deadline: {{task.deadline}}</div>
       </div>
   </li>

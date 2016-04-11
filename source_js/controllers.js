@@ -70,12 +70,16 @@ mp4Controllers.controller('ProfileController', ['$scope', '$http', '$routeParams
           $scope.incompleteTaskList = getall_response.data;
         });
       });
+      var index = $scope.user.pendingTasks.indexOf(id);
+      if (index > -1)
+        $scope.user.pendingTasks.splice(index, 1);
+      Users.put($scope.user).success(function(response) {});
     });
   };
 
 }]);
 
-mp4Controllers.controller('TasksController', ['$scope', '$window', 'Tasks' , function($scope, $window, Tasks) {
+mp4Controllers.controller('TasksController', ['$scope', '$window', 'Tasks', 'Users' , function($scope, $window, Tasks, Users) {
   $scope.currSkip = 0;
   $scope.taskType = "false";
   $scope.sortBy = "dateCreated";
@@ -88,8 +92,27 @@ mp4Controllers.controller('TasksController', ['$scope', '$window', 'Tasks' , fun
 
   // remove a specified task from the backend
   $scope.removeTask = function(id) {
+    Tasks.getById(id).success(function(get_task_response) {
+      $scope.ownerID = get_task_response.data.assignedUser;
+
+      console.log('before');
+      console.log(JSON.stringify($scope.ownerID));
+      console.log('after');
+      if ($scope.ownerID != "") {
+        console.log('in');
+        Users.getById($scope.ownerID).success(function(get_user_response) {
+          $scope.owner = get_user_response.data;
+          var index = $scope.owner.pendingTasks.indexOf(id);
+          if (index > -1)
+            $scope.owner.pendingTasks.splice(index, 1);
+
+          Users.put($scope.owner).success(function(put_response) {});
+        });
+      }
+    });
+
     Tasks.remove(id).success(function(delete_response) {
-      Tasks.getAll().success(function(get_response) {
+      Tasks.getByPagination($scope.currSkip, $scope.sortBy, $scope.currQuery, $scope.direction).success(function(get_response) {
         $scope.taskList = get_response.data;
       });
     });
@@ -177,6 +200,7 @@ mp4Controllers.controller('AddTaskController', ['$scope', '$window', 'Tasks', 'U
   // add a new task to the backend, must get the user to be assigned to
   $scope.addTask = function() {
     Users.getById($scope.userID).success(function(response) {
+      $scope.user = response.data;
       $scope.userName = response.data.name;
 
       Tasks.add({name: $scope.name,
@@ -186,6 +210,9 @@ mp4Controllers.controller('AddTaskController', ['$scope', '$window', 'Tasks', 'U
                 assignedUserName: $scope.userName}).then(
         function(response) {
           $scope.status = "Task '" + $scope.name + "' has been added!";
+          $scope.taskID = response.data.data._id;
+          $scope.user.pendingTasks.push($scope.taskID);
+          Users.put($scope.user).success(function(response) {});
         },
         function(error) {
           $scope.status = error.data.message;
@@ -214,12 +241,51 @@ mp4Controllers.controller('EditTaskController', ['$scope', '$window', '$routePar
     // get the specific task from the backend
     Tasks.getById($routeParams.taskID).success(function(response) {
       $scope.task = response.data;
+
+      if ($scope.task.assignedUser != '') {
+        Users.getById($scope.task.assignedUser).success(function(response) {
+          $scope.orig_owner = response.data;
+        });
+      }
     });
   });
 
+
+
   $scope.editTask = function() {
     Users.getById($scope.task.assignedUser).success(function(response) {
-      $scope.task.assignedUserName = response.data.name;
+      $scope.owner = response.data;
+      $scope.task.assignedUserName = $scope.owner.name
+
+      if ($scope.orig_owner != undefined) {
+
+        // if the task is changing users
+        if ($scope.orig_owner._id != $scope.owner._id) {
+          var index = $scope.orig_owner.pendingTasks.indexOf($scope.task._id);
+          if (index > -1)
+            $scope.orig_owner.pendingTasks.splice(index, 1);
+          $scope.owner.pendingTasks.push($scope.task._id);
+
+          Users.put($scope.orig_owner).success(function(put_reponse) {});
+
+          if ($scope.task.completed === false)
+            Users.put($scope.owner).success(function(put_response) {});
+        }
+
+        // if the task is not changing users but is changing to NOT COMPLETE
+        else if ($scope.task.completed === false && $scope.owner.pendingTasks.indexOf($scope.task._id) === -1) {
+          $scope.owner.pendingTasks.push($scope.task._id);
+          Users.put($scope.owner).success(function(put_response) {});
+        }
+
+        // if the task is not changing users but is changing to COMPLETE
+        else if ($scope.task.completed === true && $scope.owner.pendingTasks.indexOf($scope.task._id) > -1) {
+          $scope.owner.pendingTasks.splice(index, 1);
+          Users.put($scope.owner).success(function(put_response) {});
+        }
+      }
+
+
 
       // put the task back to the backend
       Tasks.edit($scope.task).then(

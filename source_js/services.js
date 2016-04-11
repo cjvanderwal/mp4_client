@@ -17,6 +17,10 @@ mp4Services.factory('Users', function($http, $window) {
     add : function(obj) {
       var baseUrl = $window.sessionStorage.baseurl;
       return $http.post(baseUrl+'/api/users/', obj);
+    },
+    put : function(obj) {
+      var baseUrl = $window.sessionStorage.baseurl;
+      return $http.put(baseUrl+'/api/users/'+obj._id, obj);
     }
   }
 });
