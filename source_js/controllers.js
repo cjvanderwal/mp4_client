@@ -232,8 +232,11 @@ mp4Controllers.controller('AddTaskController', ['$scope', '$window', 'Tasks', 'U
         function(response) {
           $scope.status = response.data.message;
           $scope.taskID = response.data.data._id;
-          $scope.user.pendingTasks.push($scope.taskID);
-          Users.put($scope.user).success(function(response) {});
+
+          if ($scope.user != undefined) {
+            $scope.user.pendingTasks.push($scope.taskID);
+            Users.put($scope.user).success(function(response) {});  
+          }
         },
         function(error) {
           $scope.status = error.data.message;
