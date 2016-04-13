@@ -235,7 +235,7 @@ mp4Controllers.controller('AddTaskController', ['$scope', '$window', 'Tasks', 'U
 
           if ($scope.user != undefined) {
             $scope.user.pendingTasks.push($scope.taskID);
-            Users.put($scope.user).success(function(response) {});  
+            Users.put($scope.user).success(function(response) {});
           }
         },
         function(error) {
@@ -310,6 +310,10 @@ mp4Controllers.controller('EditTaskController', ['$scope', '$window', '$routePar
           $scope.owner.pendingTasks.splice(index, 1);
           Users.put($scope.owner).success(function(put_response) {});
         }
+      }
+      else if ($scope.owner != undefined && $scope.task.completed === false) {
+        $scope.owner.pendingTasks.push($scope.task._id);
+        Users.put($scope.owner).success(function(put_response) {});
       }
 
       // put the task to the backend
