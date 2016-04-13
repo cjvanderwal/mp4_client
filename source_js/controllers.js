@@ -127,7 +127,14 @@ mp4Controllers.controller('TasksController', ['$scope', '$window', 'Tasks', 'Use
   // watch the taskType variable to change the [pending, completed, all] sort option
   $scope.$watch('taskType', function() {
     $scope.currSkip = 0;
-    $scope.currQuery = {"where": {"completed": $scope.taskType}};
+
+    // if the task type is undefined (user selected 'all'), display both true and false tasks
+    if ($scope.taskType != undefined) {
+      $scope.currQuery = {"where": {"completed": $scope.taskType}};
+    }
+    else {
+      $scope.currQuery = {"where": {"completed": {"$in": [true, false]} }};
+    }
 
     // get 10 new tasks and reset the task skip whenever the sort option is changed
     Tasks.getByPagination($scope.currSkip, $scope.sortBy, $scope.currQuery, $scope.direction).success(function(response) {
